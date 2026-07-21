@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chatea con Deadpool | ComicSansCon</title>
+  <meta name="description" content="POC: chatea con Deadpool en tiempo real. Un experimento de ComicSansCon." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/styles.css"/>
+</head>
+<body>
+
+  <div class="halftone-layer" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a href="/home" class="brand" data-link>
+      <span class="brand-mark">CSC</span>
+      <span class="brand-name">ComicSansCon</span>
+    </a>
+    <nav class="tabs" aria-label="Navegacion principal">
+      <a href="/home" class="tab" data-link data-route="home">Inicio</a>
+      <a href="/chat" class="tab" data-link data-route="chat">Chat</a>
+      <a href="/about" class="tab" data-link data-route="about">Acerca de</a>
+    </nav>
+  </header>
+
+  <main id="app-root" class="app-root">
+    <!-- Las vistas se renderizan aca dinamicamente via app.js -->
+  </main>
+
+  <footer class="site-footer">
+    <p>POC interno - ComicSansCon. Deadpool es un personaje ficticio usado con fines demostrativos, sin fines comerciales.</p>
+  </footer>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
+

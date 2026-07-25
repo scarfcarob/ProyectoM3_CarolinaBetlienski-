@@ -1,5 +1,5 @@
 {
-  "name": "proyectom3_carolinabetlienski",
+  "name": "comicsanscon-deadpool-chat",
   "version": "1.0.0",
   "main": "index.js",
   "directories": {
@@ -11,5 +11,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "POC - ComicSansCon: chat con Deadpool usando Google Gemini AI vía Vercel Functions",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
 }

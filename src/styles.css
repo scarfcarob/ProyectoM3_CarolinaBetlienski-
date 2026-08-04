@@ -346,7 +346,7 @@ button, input {
   margin: 0;
   white-space: pre-wrap;
   word-wrap: break-word;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere; 
 }
 
 
@@ -631,3 +631,22 @@ button, input {
   white-space: nowrap;
 }
 
+
+.skip-link {
+  position: absolute;
+  top: -3rem;
+  left: 0.5rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background: var(--color-primario);
+  color: var(--color-texto-claro);
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 700;
+  transition: top 0.15s ease;
+}
+
+
+.skip-link:focus {
+  top: 0.5rem;
+}

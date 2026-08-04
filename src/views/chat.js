@@ -1,5 +1,6 @@
 
 import { obtenerHoraActual } from '../utils.js';
+import { fetchMensajes } from '../services/mensajesService.js';
 
 // --- ESTADO EN MEMORIA ---
 const historialMensajes = [
@@ -11,17 +12,66 @@ const historialMensajes = [
 ];
 
 let estaEscribiendo = false;
+let estaCargando = false;
+let hayError = false;
 
 function escapeHTML(str) {
-  return str.replace(/[&<>'"]/g, 
+  return str.replace(/[&<>'"]/g,
     tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
   );
+}
+
+
+async function cargarMensajesIniciales() {
+  estaCargando = true;
+  hayError = false;
+  renderizarMensajes();
+
+  try {
+    const mensajesRemotos = await fetchMensajes();
+
+    if (Array.isArray(mensajesRemotos)) {
+      historialMensajes.push(...mensajesRemotos);
+    }
+  } catch (err) {
+    console.error('cargarMensajesIniciales falló:', err);
+    hayError = true;
+  } finally {
+    estaCargando = false;
+    renderizarMensajes();
+  }
 }
 
 function renderizarMensajes() {
   const lista = document.getElementById('lista-mensajes');
   if (!lista) return;
 
+  
+  if (hayError) {
+    lista.innerHTML = `
+      <li class="estado-error">
+        <p>No se pudieron cargar los mensajes.</p>
+        <button type="button" id="btn-reintentar" class="boton-cta">Reintentar</button>
+      </li>
+    `;
+    document.getElementById('btn-reintentar')
+      ?.addEventListener('click', cargarMensajesIniciales);
+    return;
+  }
+
+  // --- ESTADO: LOADING ---
+  if (estaCargando) {
+    lista.innerHTML = `
+      <li class="estado-loading">
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+      </li>
+    `;
+    return;
+  }
+
+  // --- ESTADO: SUCCESS ---
   lista.innerHTML = historialMensajes.map(msg => `
     <li class="mensaje mensaje--${msg.emisor}">
       <p class="mensaje-texto">${escapeHTML(msg.texto)}</p>
@@ -48,12 +98,13 @@ function inicializarEventosChat() {
 
   if (!formulario || !input) return;
 
-  renderizarMensajes();
+  
+  cargarMensajesIniciales();
 
   formulario.addEventListener('submit', (evento) => {
     evento.preventDefault();
     const texto = input.value.trim();
-    if (!texto || estaEscribiendo) return;
+    if (!texto || estaEscribiendo || estaCargando) return;
 
     historialMensajes.push({
       emisor: 'usuario',
@@ -79,13 +130,13 @@ function inicializarEventosChat() {
   });
 }
 
-// FUNCIÓN PRINCIPAL QUE CONSUME EL ROUTER
-export function renderChat() {
-  const app = document.getElementById('app');
-  //if (!app) return;   //no borres esta linea en ningun lado, solo estoy probando algo
 
-  // 1. Inyectar HTML en el contenedor principal
-  app.innerHTML = `                                 
+export function renderChat() {
+  const app = document.getElementById('app');     
+  if (!app) return;                               
+
+  
+  app.innerHTML = `
     <section class="tarjeta-chat">
       <header class="encabezado-chat">
         <div class="encabezado-chat-avatar" aria-hidden="true">DP</div>
@@ -119,7 +170,7 @@ export function renderChat() {
     </section>
   `;
 
-  // 2. Vincular listeners y estado una vez montado en el DOM
+  
   inicializarEventosChat();
 }
 

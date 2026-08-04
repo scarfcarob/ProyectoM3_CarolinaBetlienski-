@@ -26,7 +26,7 @@ export function router() {
   if (renderView) {
     renderView();
   } else {
-    renderNotFound();
+    renderNotFound();      
   }
 
    //* Refactoring

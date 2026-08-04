@@ -1,7 +1,10 @@
 
 export function renderNotFound() {
-  const app = document.getElementById('app');
+  const app = document.getElementById('app');  
   if (!app) return;
+
+  // 1. Capturamos la ruta actual que generó el 404 (g))
+  //const currentPath = window.location.pathname;
 
   app.innerHTML = `
     <section class="vista-not-found">

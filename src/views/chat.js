@@ -15,30 +15,66 @@ let estaEscribiendo = false;
 let estaCargando = false;
 let hayError = false;
 
+// --- CONTROL DE CARGA (evita duplicar mensajes al re-entrar a /chat) ---
+let mensajesCargados = false;   // true una vez que el fetch inicial tuvo éxito alguna vez
+let cargaEnCursoPromise = null; // dedupe: si ya hay un fetch en vuelo, lo reusamos en vez de duplicarlo
+let idCargaActual = 0;          // descarta respuestas tardías de una navegación que ya quedó vieja
+
 function escapeHTML(str) {
   return str.replace(/[&<>'"]/g,
     tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
   );
 }
 
-
+// --- CARGA INICIAL DESDE LA API (estados loading/success/error) ---
 async function cargarMensajesIniciales() {
+  // Si ya se cargaron mensajes con éxito antes en esta sesión, no volvemos a
+  // pedirle a la API cada vez que se re-entra a /chat: evita duplicar mensajes
+  // en historialMensajes cada vez que el usuario navega afuera y vuelve.
+  if (mensajesCargados) {
+    renderizarMensajes();
+    return;
+  }
+
+  // Si ya hay una carga en curso (por ejemplo: el usuario salió de /chat y
+  // volvió rápido, antes de que la primera petición terminara), reusamos esa
+  // misma promesa en vez de disparar un segundo fetch en paralelo.
+  if (cargaEnCursoPromise) {
+    await cargaEnCursoPromise;
+    renderizarMensajes();
+    return;
+  }
+
+  const miId = ++idCargaActual;
   estaCargando = true;
   hayError = false;
   renderizarMensajes();
 
+  cargaEnCursoPromise = fetchMensajes();
+
   try {
-    const mensajesRemotos = await fetchMensajes();
+    const mensajesRemotos = await cargaEnCursoPromise;
+
+    // Si mientras esperábamos la respuesta el usuario volvió a entrar a /chat
+    // (doble-click en "atrás", history.back() disparado dos veces, etc.),
+    // idCargaActual ya avanzó y miId quedó obsoleto: descartamos este resultado
+    // para no pisar un estado más nuevo con uno viejo.
+    if (miId !== idCargaActual) return;
 
     if (Array.isArray(mensajesRemotos)) {
       historialMensajes.push(...mensajesRemotos);
     }
+    mensajesCargados = true;
   } catch (err) {
+    if (miId !== idCargaActual) return;
     console.error('cargarMensajesIniciales falló:', err);
     hayError = true;
   } finally {
-    estaCargando = false;
-    renderizarMensajes();
+    cargaEnCursoPromise = null;
+    if (miId === idCargaActual) {
+      estaCargando = false;
+      renderizarMensajes();
+    }
   }
 }
 
@@ -46,7 +82,7 @@ function renderizarMensajes() {
   const lista = document.getElementById('lista-mensajes');
   if (!lista) return;
 
-  
+  // --- ESTADO: ERROR ---
   if (hayError) {
     lista.innerHTML = `
       <li class="estado-error">
@@ -98,7 +134,7 @@ function inicializarEventosChat() {
 
   if (!formulario || !input) return;
 
-  
+  // Dispara la carga inicial (loading -> success | error)
   cargarMensajesIniciales();
 
   formulario.addEventListener('submit', (evento) => {
@@ -130,12 +166,12 @@ function inicializarEventosChat() {
   });
 }
 
-
+// FUNCIÓN PRINCIPAL QUE CONSUME EL ROUTER
 export function renderChat() {
-  const app = document.getElementById('app');     
-  if (!app) return;                               
+  const app = document.getElementById('app');
+  if (!app) return;
 
-  
+  // 1. Inyectar HTML en el contenedor principal
   app.innerHTML = `
     <section class="tarjeta-chat">
       <header class="encabezado-chat">
@@ -170,7 +206,7 @@ export function renderChat() {
     </section>
   `;
 
-  
+  // 2. Vincular listeners y estado una vez montado en el DOM
   inicializarEventosChat();
 }
 

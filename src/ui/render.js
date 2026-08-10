@@ -16,6 +16,7 @@ export function renderMensajes(historialMensajes, { estaEscribiendo = false, ban
   if (estaEscribiendo) {
     lista.innerHTML += `
       <li class="mensaje mensaje--personaje mensaje--typing" id="indicador-typing">
+        <span class="typing-texto">Deadpool está escribiendo</span>
         <span class="typing-dot"></span>
         <span class="typing-dot"></span>
         <span class="typing-dot"></span>
@@ -51,7 +52,6 @@ export function habilitarEnvio(inputEl, botonEl) {
   if (inputEl) inputEl.disabled = false;
   if (botonEl) botonEl.disabled = false;
 }
-
 
 
 export function updateTokenUsage(usage) {

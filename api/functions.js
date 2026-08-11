@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
   try {
     const response = await ai?.models?.generateContent({
-      model: process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
+      model: process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite', 
       contents: req.body.contents,
       config: {
         systemInstruction: req.body.systemInstruction,

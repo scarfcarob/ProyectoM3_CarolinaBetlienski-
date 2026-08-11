@@ -29,9 +29,6 @@ export function router() {
     renderNotFound();      
   }
 
-   //* Refactoring
-  // const renderView = routes[path] || renderNotFound;
-  // renderView();
 }
 
 export function navigateTo(path) {

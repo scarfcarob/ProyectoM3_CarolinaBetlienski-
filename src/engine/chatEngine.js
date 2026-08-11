@@ -15,6 +15,7 @@ import {
 
 let historialMensajes = [];
 let estaEscribiendo = false;
+let chatIniciado = false; 
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -122,13 +123,17 @@ export async function sendMessage(textoCrudo, elementos) {
 const debouncedSend = debounce((texto, elementos) => sendMessage(texto, elementos), 300);
 
 export function initChatEngine() {
-  historialMensajes = [
-    {
-      emisor: 'personaje',
-      texto: '¡Eh, vos! Sí, vos del otro lado de la pantalla. Soy Deadpool. ¿Qué contás?',
-      hora: obtenerHoraActual()
-    }
-  ];
+ 
+  if (!chatIniciado) {
+    historialMensajes = [
+      {
+        emisor: 'personaje',
+        texto: '¡Eh, vos! Sí, vos del otro lado de la pantalla. Soy Deadpool. ¿Qué contás?',
+        hora: obtenerHoraActual()
+      }
+    ];
+    chatIniciado = true;
+  }
   estaEscribiendo = false;
 
   const formulario = document.querySelector('.formulario-chat');

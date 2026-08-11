@@ -6,13 +6,18 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest"
   },
   "keywords": [],
-  "author": "",
+  "author": "Betlienski, Carolina",
   "license": "ISC",
+  "type": "module",
   "description": "POC - ComicSansCon: chat con Deadpool usando Google Gemini AI vía Vercel Functions",
+  "devDependencies": {
+    "jsdom": "^29.1.1",
+    "vitest": "^4.1.10"
+  },
   "dependencies": {
-    "express": "^5.2.1"
+    "@google/genai": "^2.16.0"
   }
 }

@@ -38,9 +38,13 @@ export async function mockFetchAI(payload, phrases) {
   const systemText = payload?.systemInstruction?.parts?.[0]?.text ?? "";
   const promptTokenCount = estimateContentsTokens(payload.contents) + estimateTokens(systemText);
 
-  console.log(
-    `📊 Request #${callCount} — historial: ${payload.contents.length} mensajes, ~${promptTokenCount} tokens de entrada estimados`
-  );
+
+  if (import.meta.env?.DEV) {
+    console.log(
+      `📊 Request #${callCount} — historial: ${payload.contents.length} mensajes, ~${promptTokenCount} tokens de entrada estimados`
+    );
+  }
+
 
   let responseText =
     Array.isArray(phrases) && phrases.length > 0

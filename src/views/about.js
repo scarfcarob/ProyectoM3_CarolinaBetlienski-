@@ -13,15 +13,26 @@ export function renderAbout() {
       </p>
       <h2 class="about-subtitulo">El personaje</h2>
       <p>
-        Elegimos a <strong>Deadpool</strong> por su tono irreverente y
-        porque rompe la cuarta pared todo el tiempo.
+         Elegimos a <strong>Deadpool</strong> por su tono irreverente,
+         cómico y consciente de que rompe la cuarta pared todo el tiempo —
+         el candidato perfecto para demostrar una conversación "con
+         personalidad" en lugar de un asistente genérico.
       </p>
+      
       <h2 class="about-subtitulo">Stack técnico</h2>
       <ul>
         <li>HTML / CSS / JS vanilla</li>
         <li>Routing propio con History API (sin librerías)</li>
-        <li>Vercel Serverless Functions (próxima etapa)</li>
+        <li>Integración con Google Gemini AI vía Vercel Serverless Functions</li>
       </ul>
+      
+      <footer class="about-footer">
+        <span>&copy; 2026 Betlienski Carolina</span>
+        <div class="about-footer-links">
+          <a href="https://github.com/scarfcarob" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://www.linkedin.com/in/carolina-betlienski-8bb8811b0" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </div>
+      </footer>
     </section>
   `;
 }

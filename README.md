@@ -1,16 +1,16 @@
+
 # Chateá con Deadpool — ComicSansCon
 
 Prueba de concepto (POC) de un chat con personaje ficticio potenciado por IA, desarrollada para **ComicSansCon**, una agencia digital especializada en experiencias interactivas para fans de videojuegos, películas y series.
-
 
 ---
 
 ## Índice
 
 1. [Descripción del personaje elegido](#1-descripción-del-personaje-elegido)
-2. [Manual de usuario — cómo usar la app](#2-manual-de-usuario--cómo-usar-la-app)
-3. [Manual técnico — arquitectura y decisiones técnicas](#3-manual-técnico--arquitectura-y-decisiones-técnicas)
-4. [Requisitos y pasos para ejecutar en local](#4-requisitos-y-pasos-para-ejecutar-en-local)
+2. [Requisitos y pasos para ejecutar en local](#2-requisitos-y-pasos-para-ejecutar-en-local)
+3. [Manual de usuario — cómo usar la app](#3-manual-de-usuario--cómo-usar-la-app)
+4. [Manual técnico — arquitectura y decisiones técnicas](#4-manual-técnico--arquitectura-y-decisiones-técnicas)
 5. [Cómo ejecutar los tests](#5-cómo-ejecutar-los-tests)
 6. [Cómo desplegar a Vercel](#6-cómo-desplegar-a-vercel)
 7. [Capturas de pantalla](#7-capturas-de-pantalla)
@@ -38,7 +38,61 @@ Elegimos a **Deadpool**, el mercenario bocón del Universo Marvel, como personaj
 
 ---
 
-## 2) Manual de usuario — cómo usar la app
+## 2) Requisitos y pasos para ejecutar en local
+
+### Requisitos previos
+
+- [Node.js](https://nodejs.org/) (versión LTS recomendada)
+- [Vercel CLI](https://vercel.com/docs/cli) instalado globalmente:
+  ```bash
+  npm install -g vercel
+  ```
+- Una API key de [Google Gemini](https://ai.google.dev/) (Google AI Studio)
+
+### Pasos
+
+**1. Descargar / clonar el proyecto**
+
+```bash
+git clone <url-del-repositorio>
+cd <nombre-de-la-carpeta-del-proyecto>
+```
+
+**2. Instalar dependencias**
+
+```bash
+npm install
+```
+
+**3. Configurar variables de entorno**
+
+Copiá el archivo de ejemplo y completá tu API key:
+
+```bash
+cp .env.example .env
+```
+
+Editá `.env` y pegá tu clave:
+
+```
+GEMINI_API_KEY=tu_clave_copiada_aca
+```
+
+> El archivo `.env` está ignorado por git (ver `.gitignore`) — nunca subas tu clave real al repositorio.
+
+**4. Ejecutar en modo desarrollo con Vercel**
+
+Como el proyecto usa una función serverless (`api/functions.js`), se debe levantar con la CLI de Vercel para que esa función esté disponible localmente:
+
+```bash
+vercel dev
+```
+
+Esto va a levantar la app (por defecto en `http://localhost:3000`) sirviendo tanto el frontend estático como la función `/api/functions`.
+
+---
+
+## 3) Manual de usuario — cómo usar la app
 
 ### Navegación
 
@@ -72,7 +126,7 @@ En el pie del chat vas a ver un contador de tokens de sesión: `Tokens de sesió
 
 ---
 
-## 3) Manual técnico — arquitectura y decisiones técnicas
+## 4) Manual técnico — arquitectura y decisiones técnicas
 
 ### Stack
 
@@ -89,7 +143,8 @@ PROYECTOM3_CAROLINABETLIENSKI/
 │   └── functions.js          # Función serverless: proxy hacia Gemini, oculta la API key
 ├── docs/
 │   ├── demo.gif               # Demo de la app en funcionamiento
-│   └── demo_deploy.gif        # Demo de la app ya desplegada en Vercel
+│   ├── demo_deploy.gif        # Demo de la app ya desplegada en Vercel
+│   └── docu-ia.md             # Registro de prompts y respuestas de IA usadas en el proyecto
 ├── src/
 │   ├── engine/
 │   │   └── chatEngine.js      # Orquesta el envío/recepción de mensajes, reintentos y cuota
@@ -160,60 +215,6 @@ Todo el texto de usuario y del personaje se escapa antes de insertarse en el DOM
 
 **Sin persistencia.**
 El historial de mensajes y la cuota de sesión viven solo en memoria del cliente — a propósito, para mantener la POC simple. Se le avisa al usuario en la vista de Inicio.
-
----
-
-## 4) Requisitos y pasos para ejecutar en local
-
-### Requisitos previos
-
-- [Node.js](https://nodejs.org/) (versión LTS recomendada)
-- [Vercel CLI](https://vercel.com/docs/cli) instalado globalmente:
-  ```bash
-  npm install -g vercel
-  ```
-- Una API key de [Google Gemini](https://ai.google.dev/) (Google AI Studio)
-
-### Pasos
-
-**1. Descargar / clonar el proyecto**
-
-```bash
-git clone <url-del-repositorio>
-cd <nombre-de-la-carpeta-del-proyecto>
-```
-
-**2. Instalar dependencias**
-
-```bash
-npm install
-```
-
-**3. Configurar variables de entorno**
-
-Copiá el archivo de ejemplo y completá tu API key:
-
-```bash
-cp .env.example .env
-```
-
-Editá `.env` y pegá tu clave:
-
-```
-GEMINI_API_KEY=tu_clave_copiada_aca
-```
-
-> El archivo `.env` está ignorado por git (ver `.gitignore`) — nunca subas tu clave real al repositorio.
-
-**4. Ejecutar en modo desarrollo con Vercel**
-
-Como el proyecto usa una función serverless (`api/functions.js`), se debe levantar con la CLI de Vercel para que esa función esté disponible localmente:
-
-```bash
-vercel dev
-```
-
-Esto va a levantar la app (por defecto en `http://localhost:3000`) sirviendo tanto el frontend estático como la función `/api/functions`.
 
 ---
 
@@ -295,7 +296,7 @@ Una vez desplegado, Vercel va a dar una URL pública. Entrá y probá el flujo c
 
 ## 9) Registro de uso de IA en el proyecto
 
-*(Pendiente — se documentará más adelante y se enlazará desde acá)*
+El detalle de los prompts utilizados y las respuestas obtenidas de la IA durante el desarrollo está documentado en [`docs/docu-ia.md`](./docs/docu-ia.md).
 
 ---
 
